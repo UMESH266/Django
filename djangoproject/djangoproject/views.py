@@ -11,6 +11,7 @@ you see in your browser when you render a web page.
 
 # Required libraries
 from django.http import HttpResponse
+import random
 
 HTML_STRING = """
 <h1> Hello world! </h1>
@@ -22,3 +23,22 @@ def home_view(request):
     Return HTML as a response (we pick to return the response)
     """
     return HttpResponse(HTML_STRING)
+
+# Dynamic view 
+def dynamic_view(request):
+    """
+    Takes variable input in the request.
+    """
+    name = "Umesh"
+    num = random.randint(10, 1000)
+    html_str = f"""
+    <h1>Hello, {name} - {num}!</h1>
+    """
+
+    html_para = f"""
+    <p>Hello, {name} - {num}!</p>
+    """
+    html = html_str + html_para
+    return HttpResponse(html)
+
+# Django templates
