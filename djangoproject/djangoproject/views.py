@@ -46,7 +46,7 @@ from django.template.loader import render_to_string
 # Method 3: using class object 
 from articles.models import Articles
 
-def home_view(request):
+def home_view(request, id=None, *args, **kwargs):
     """
     Take in request (Django sends request) and
     Return HTML as a response (we pick to return the response)
@@ -75,7 +75,9 @@ def home_view(request):
     # """.format(**context)
 
     # Method - 3: Reading content from template file having html files and rendering to stirng
+    articles_list = Articles.objects.all()
     context = {
+        "article_list" : articles_list,
         "id": article_obj.id,
         "title": article_obj.title,
         "content": article_obj.content

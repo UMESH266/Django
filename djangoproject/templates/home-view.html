@@ -1,2 +1,33 @@
+<!-- Method 2: -->
+{% extends "base.html" %}
+
+{% block content %}
 <h1>{{ title }} (id: {{ id }})</h1>
 <p>{{ content }}</p>
+
+<!-- Rendering list-->
+<!-- 
+    1. Use for block to get list of items under ul tag
+    2. Use if block for conditioned extraction of object
+    3. Use li tag for listing
+    4. Use a tag to create reference of items
+ -->
+ <ul>
+    {% for x in article_list %}
+        {% if x.title %}
+            <li><a href="/articles/{{ x.id }}">{{ x.id }} : {{ x.title }} - {{ x.content }}</a></li>
+        {% endif %}
+    {% endfor %}
+</ul>
+{% endblock content %} 
+
+{% block name %}
+<h1>Umesh</h1>
+{% endblock name %}
+
+<!-- 
+Method - 1: 
+<h1>{{ title }} (id: {{ id }})</h1>
+<p>{{ content }}</p> 
+
+--> 
