@@ -12,6 +12,7 @@ you see in your browser when you render a web page.
 # Required libraries
 from django.http import HttpResponse
 import random
+from django.template.loader import render_to_string
 
 # Method 1: view creation
 # HTML_STRING = """
@@ -45,16 +46,40 @@ import random
 # Method 3: using class object 
 from articles.models import Articles
 
-# Fetching created object using id
-article_obj = Articles.objects.get(id=2)
-
 def home_view(request):
     """
     Take in request (Django sends request) and
     Return HTML as a response (we pick to return the response)
     """
-    HTML_STRING = f"""
-    <h1>{article_obj.title}</h1>
-    <p>{article_obj.content}</p>
-    """
+    # Fetching data from database
+    random_id = random.randint(1, 3)
+    article_obj = Articles.objects.get(id=random_id)
+
+    # Django templates
+    # Method - 1:
+    # HTML_STRING = f"""
+    # <h1>{article_obj.title} (id: {article_obj.id})</h1>
+    # <p>{article_obj.content}</p>
+    # """
+
+    # Method - 2: Using context dictionary and format
+    # context = {
+    #     "id": article_obj.id,
+    #     "title": article_obj.title,
+    #     "content": article_obj.content
+    # }
+
+    # HTML_STRING = """
+    # <h1>{title} (id: {id})</h1>
+    # <p>{content}</p>
+    # """.format(**context)
+
+    # Method - 3: Reading content from template file having html files and rendering to stirng
+    context = {
+        "id": article_obj.id,
+        "title": article_obj.title,
+        "content": article_obj.content
+    }
+    HTML_STRING = render_to_string("home-view.html", context=context)
+
     return HttpResponse(HTML_STRING)
