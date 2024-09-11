@@ -21,6 +21,8 @@ from articles import views
 urlpatterns = [
     path('', home_view),
     # path('', dynamic_view),
+    path('articles/', views.article_search_view),
+    path('articles/create/', views.article_create_view), # Order of operations is important
     path('articles/<int:id>/', views.article_detail_view),
     path('admin/', admin.site.urls),
 ]
