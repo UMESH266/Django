@@ -1,7 +1,22 @@
+from dataclasses import fields
 from django import forms
+from .models import Articles
 
 # Create forms here
-class ArticleForm(forms.Form):
+class ArticleForm(forms.ModelForm):
+    class Meta:
+        model = Articles
+        fields = ['title', 'content']
+
+    def clean(self):
+        data = self.cleaned_data
+        title = data.get('title')
+        qs = Articles.objects.filter(title__icontains=title)
+        if qs.exists():
+            self.add_error("title", f"{title} already exists.")
+        return data
+
+class ArticleFormOld(forms.Form):
     title = forms.CharField()
     content = forms.CharField()
 

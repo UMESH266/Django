@@ -43,11 +43,15 @@ def article_create_view(request):
         "form": form
     }
     if form.is_valid():
-        article_title =  form.cleaned_data.get('title')
-        content =  form.cleaned_data.get('content')
-        article_obj = Articles.objects.create(title=article_title, content=content)
-        context['object'] = article_obj
-        context['created'] = True
+        # Method - 2
+        article_obj = form.save()
+        context["form"] = ArticleForm()
+        # Method-1
+        # title =  form.cleaned_data.get('title')
+        # content =  form.cleaned_data.get('content')
+        # article_obj = Articles.objects.create(title=title, content=content)
+        # context['object'] = article_obj
+        # context['created'] = True
     return render(request, "articles/create.html", context=context)
 
 def article_detail_view(request, id=None):
