@@ -2,6 +2,7 @@ from multiprocessing import context
 from django.shortcuts import render
 from .models import Articles
 from django.contrib.auth.decorators import login_required
+from articles.forms import ArticleForm
 # Create your views here.
 
 def article_search_view(request):
@@ -20,10 +21,30 @@ def article_search_view(request):
 
 @login_required
 def article_create_view(request):
-    context = {}
-    if request.method =="POST":
-        article_title =  request.POST.get('title')
-        content =  request.POST.get('content')
+    # Method - 1:
+    # form = ArticleForm()
+    # context = {
+    #     "form": form
+    # }
+    # if request.method =="POST":
+    #     form = ArticleForm(request.POST)
+    #     context["form"] = form
+    #     if form.is_valid():
+    #         article_title =  form.cleaned_data.get('title')
+    #         content =  form.cleaned_data.get('content')
+    #         article_obj = Articles.objects.create(title=article_title, content=content)
+    #         context['object'] = article_obj
+    #         context['created'] = True
+    # return render(request, "articles/create.html", context=context)
+
+    # Method - 2
+    form = ArticleForm(request.POST or None)
+    context = {
+        "form": form
+    }
+    if form.is_valid():
+        article_title =  form.cleaned_data.get('title')
+        content =  form.cleaned_data.get('content')
         article_obj = Articles.objects.create(title=article_title, content=content)
         context['object'] = article_obj
         context['created'] = True
