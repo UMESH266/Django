@@ -1,12 +1,34 @@
+from cgitb import lookup
 from pyexpat import model
+from turtle import title
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 from django.db.models.signals import pre_save, post_save
 from articles.utils import slugify_instance_title
 from django.urls import reverse
+from django.db.models import Q
 
 # Create your models here.
+class ArticleQuerySet(models.QuerySet):
+    def search(self, query=None):
+        if query is None or query=="":
+            return self.none() # empty list
+        lookups = Q(title__icontains = query) | Q(content__icontains = query)
+        return self.filter(lookups)
+
+class ArticleManager(models.Manager):
+    def get_queryset(self):
+        return ArticleQuerySet(self.model, using=self._db)
+    
+    def search(self, query=None):
+        # if query is None or query=="":
+        #     return self.get_queryset().none() # empty list
+        # lookups = Q(title__icontains = query) | Q(content__icontains = query)
+        # # return Articles.objects.filter(lookups)
+        # return self.get_queryset().filter(lookups)
+        return self.get_queryset().search(query=query)
+    
 class Articles(models.Model): # All the class in models must import from models.Model
     title = models.CharField(max_length=120)
     slug = models.SlugField(unique=True, blank=True, null=True)
@@ -16,6 +38,8 @@ class Articles(models.Model): # All the class in models must import from models.
     # auto_now_add : Whenever model added, time added
     updated = models.DateTimeField(auto_now=True)
     publish = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
+
+    objects = ArticleManager()
 
     def get_absolute_url(self):
         # return f'/articles/{self.slug}/'
