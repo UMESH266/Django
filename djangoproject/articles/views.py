@@ -1,8 +1,10 @@
+from errno import EXDEV
 from multiprocessing import context
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from .models import Articles
 from django.contrib.auth.decorators import login_required
 from articles.forms import ArticleForm
+from django.http import Http404
 # Create your views here.
 
 def article_search_view(request):
@@ -52,12 +54,22 @@ def article_create_view(request):
         # article_obj = Articles.objects.create(title=title, content=content)
         # context['object'] = article_obj
         # context['created'] = True
+        # return redirect("article-detail", slug=article_obj.slug)
+        return redirect(article_obj.get_absolute_url())
+    
     return render(request, "articles/create.html", context=context)
 
-def article_detail_view(request, id=None):
+def article_detail_view(request, slug=None):
     article_obj = None
-    if id is not None:
-        article_obj = Articles.objects.get(id=id)
+    if slug is not None:
+        try:
+            article_obj = Articles.objects.get(slug=slug)
+        except Articles.DoesNotExist:
+            raise Http404
+        except Articles.MultipleObjectsReturned:
+            article_obj = Articles.objects.filter(slug=slug).first()
+        except:
+            raise Http404
     context = {
         "object": article_obj
     }

@@ -12,10 +12,11 @@
     3. Use li tag for listing
     4. Use a tag to create reference of items
  -->
+ <a href="{% url 'article-create' %}">Create Article</a>
  <ul>
     {% for x in article_list %}
         {% if x.title %}
-            <li><a href="/articles/{{ x.id }}">{{ x.id }} : {{ x.title }} - {{ x.content }}</a></li>
+            <li><a href="{{ x.get_absolute_url }}">{{ x.id }} : {{ x.title }} - {{ x.content }}</a></li>
         {% endif %}
     {% endfor %}
 </ul>
