@@ -4,6 +4,7 @@ from .models import Recipe
 from .forms import RecipeForm
 # Create your views here.
 # CRUD - Create Retrieve Update and Delete
+# Function Based View (FBV) and Class Based View (CBV)
 
 @login_required
 def recipe_list_view(request, id=None):
